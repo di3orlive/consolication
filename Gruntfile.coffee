@@ -9,6 +9,8 @@ module.exports = (grunt) ->
       server: ".tmp"
       build: "build"
     jade:
+      options:
+        pretty: true
       server:
         files: 
           ".tmp/index.html": "src/index.jade"
@@ -55,19 +57,28 @@ module.exports = (grunt) ->
       coffee:
         files: "src/*.coffee"
         tasks: "browserify"
+    htmlbuild:
+      build:
+        src: ".tmp/index.html"
+        dest: "build"
     htmlmin:
+      options:
+        collapseWhitespace: true
+        removeAttributeQuotes: true
       build:
         files:
-          "build/index.html": ".tmp/index.html"
+          "build/index.html": "build/index.html"
     cssmin:
       build:
         files:
           "build/index.css": ".tmp/index.css"
     uglify:
       build:
-        files:
-          "build/vendor.js": ".tmp/vendor.js"
-          "build/index.js": ".tmp/index.js"
+        files: 
+          "build/index.js": [
+            ".tmp/vendor.js"
+            ".tmp/index.js"
+          ]
 
   grunt.registerTask "server", [
     "clean:server"
@@ -83,6 +94,7 @@ module.exports = (grunt) ->
     "jade"
     "browserify"
     "stylus"
+    "htmlbuild"
     "htmlmin"
     "cssmin"
     "uglify"

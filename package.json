@@ -16,6 +16,7 @@
     "coffeeify": "~0.5",
     "grunt-express": "~1.0",
     "grunt-contrib-watch": "~0.5",
+    "grunt-html-build": "~0.2",
     "grunt-contrib-htmlmin": "~0.1",
     "grunt-contrib-cssmin": "~0.6",
     "grunt-contrib-uglify": "~0.2"
