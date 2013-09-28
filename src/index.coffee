@@ -16,31 +16,41 @@ Consolication = React.createClass
 
   componentDidMount: ->
     if global.WebSocket
-      @websocket = new global.WebSocket "ws://#{@props.wsServer}"
+      attempts = 0
 
-      @websocket.onclose = =>
-        @appendError "WebSocket connection closed"
+      do connect = =>
+        @websocket = new global.WebSocket "ws://#{@props.wsServer}"
 
-      @websocket.onmessage = (message) =>
-        @appendOutput message.data
+        @websocket.onopen = =>
+          if attempts > 0
+            attempts = 0
+            @write "Connected"
 
-      @websocket.onerror = =>
-        @appendError "WebSocket error"
+        @websocket.onclose = =>
+          @writeError "WebSocket connection closed, trying to reconnect"
+          attempts += 1
+          setTimeout connect, 1000
+
+        @websocket.onmessage = (message) =>
+          @writeHTML message.data
+
+        @websocket.onerror = =>
+          @writeError "WebSocket error"
 
     else
-      @appendError "WebSocket not supported by your browser"
+      @writeError "WebSocket not supported by your browser"
 
-  appendOutput: (html) ->
+  writeHTML: (html) ->
     outputNode = @refs.output.getDOMNode()
     outputNode.innerHTML = outputNode.innerHTML + html
     contentNode = @refs.content.getDOMNode()
     contentNode.scrollTop = contentNode.scrollHeight
 
-  appendCommand: (command) ->
-    @appendOutput "<p>&gt; #{command}</p>"
+  write: (text, style) ->
+    @writeHTML """<p style="#{style}">#{text}</p>"""
 
-  appendError: (message) ->
-    @appendOutput """<p style="color: red">#{message}</p>"""
+  writeError: (message) ->
+    @write message, "color: red"
 
   handleClick: ->
     @refs.input.getDOMNode().focus()
@@ -56,7 +66,7 @@ Consolication = React.createClass
     else
       "__EMPTY__"
 
-    @appendCommand command
+    @write "> #{command}"
     @websocket.send command
     @setState command: ""
 
