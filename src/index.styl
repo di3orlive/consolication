@@ -1,4 +1,37 @@
 @import "nib"
 
-.console
-  reset-global()
+background-color = black
+font-family = monospace
+font-size = 14px
+color = lightgreen
+
+char-height = 16px
+char-width = 8px
+rows = 25
+
+.consolication
+  global-reset()
+
+.consolication-content
+  height (char-height * rows)
+  background-color background-color
+  overflow-y scroll
+  color color
+
+  .consolication-output
+    font-family font-family
+    font-size font-size
+
+  .consolication-input-field
+    display block
+    box-sizing border-box
+    width 100%
+    margin 0
+    padding 0
+    border none
+    outline none
+    background-color background-color
+    line-height 1
+    font-family font-family
+    font-size font-size
+    color color
