@@ -42,6 +42,7 @@ module.exports = (grunt) ->
         hostname: "0.0.0.0"
       server:
         options:
+          server: "server"
           bases: ".tmp"
           livereload: true
     watch:

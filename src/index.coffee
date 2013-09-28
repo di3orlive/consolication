@@ -8,11 +8,33 @@ Consolication = React.createClass
   getInitialState: ->
     command: ""
 
+  componentDidMount: ->
+    if global.WebSocket
+      @websocket = new global.WebSocket "ws://localhost:4000"
+
+      @websocket.onclose = =>
+        @appendError "WebSocket connection closed"
+
+      @websocket.onmessage = (message) =>
+        @appendOutput message.data
+
+      @websocket.onerror = =>
+        @appendError "WebSocket error"
+
+    else
+      @appendError "WebSocket not supported by your browser"
+
   appendOutput: (html) ->
     outputNode = @refs.output.getDOMNode()
     outputNode.innerHTML = outputNode.innerHTML + html
     contentNode = @refs.content.getDOMNode()
     contentNode.scrollTop = contentNode.scrollHeight
+
+  appendCommand: (command) ->
+    @appendOutput "<p>&gt; #{command}</p>"
+
+  appendError: (message) ->
+    @appendOutput """<p style="color: red">#{message}</p>"""
 
   handleClick: ->
     @refs.input.getDOMNode().focus()
@@ -28,7 +50,8 @@ Consolication = React.createClass
     else
       "__EMPTY__"
 
-    @appendOutput "<p>&gt; #{command}</p>"
+    @appendCommand command
+    @websocket.send command
     @setState command: ""
 
   render: ->
