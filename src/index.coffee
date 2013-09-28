@@ -7,6 +7,9 @@ url = require "url"
 
 
 Consolication = React.createClass
+  history: []
+  historyPos: 0
+
   getDefaultProps: ->
     autoFocus: false
     wsServer: "localhost:4000"
@@ -66,9 +69,25 @@ Consolication = React.createClass
     else
       "__EMPTY__"
 
+    @history.push command
+    @historyPos = @history.length
     @write "> #{command}"
     @websocket.send command
     @setState command: ""
+
+  handleKeyDown: (event) ->
+    switch event.keyCode
+      when 38 # up
+        event.preventDefault()
+        @historyPos -= 1
+        @historyPos = 0 if @historyPos < 0
+        @setState command: @history[@historyPos]
+
+      when 40 # down
+        event.preventDefault()
+        @historyPos += 1
+        @historyPos = @history.length if @historyPos > @history.length
+        @setState command: @history[@historyPos] or ""
 
   render: ->
     (div
@@ -88,7 +107,8 @@ Consolication = React.createClass
             ref: "input"
             autoFocus: @props.autoFocus
             value: @state.command
-            onChange: @handleChange))))
+            onChange: @handleChange
+            onKeyDown: @handleKeyDown))))
 
 
 document = global.document
