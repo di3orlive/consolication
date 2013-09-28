@@ -1,0 +1,21 @@
+{
+  "name": "websocket-console",
+  "version": "0.1.0",
+  "dependencies": {
+    "react-tools": "~0.4"
+  },
+  "devDependencies": {
+    "grunt": "~0.4",
+    "load-grunt-tasks": "~0.1",
+    "grunt-contrib-clean": "~0.5",
+    "grunt-contrib-jade": "~0.8",
+    "grunt-contrib-stylus": "~0.8",
+    "grunt-browserify": "~1.2",
+    "coffeeify": "~0.5",
+    "grunt-express": "~1.0",
+    "grunt-contrib-watch": "~0.5",
+    "grunt-contrib-htmlmin": "~0.1",
+    "grunt-contrib-cssmin": "~0.6",
+    "grunt-contrib-uglify": "~0.2"
+  }
+}
