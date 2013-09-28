@@ -1,16 +1,22 @@
+querystring = require "querystring"
 React = require "React"
+url = require "url"
 
 
 {div, form, input, button} = React.DOM
 
 
 Consolication = React.createClass
+  getDefaultProps: ->
+    autoFocus: false
+    wsServer: "localhost:4000"
+
   getInitialState: ->
     command: ""
 
   componentDidMount: ->
     if global.WebSocket
-      @websocket = new global.WebSocket "ws://localhost:4000"
+      @websocket = new global.WebSocket "ws://#{@props.wsServer}"
 
       @websocket.onclose = =>
         @appendError "WebSocket connection closed"
@@ -82,5 +88,11 @@ document.addEventListener "DOMContentLoaded", ->
 
   if element.attributes["data-autofocus"]
     props.autoFocus = true
+
+  if element.attributes["data-ws-server"]
+    props.wsServer = element.attributes["data-ws-server"].value
+  else
+    ws = querystring.parse(url.parse(document.location.href).query).ws
+    props.wsServer = ws if ws
 
   React.renderComponent Consolication(props), element
