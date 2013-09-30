@@ -58,6 +58,7 @@ Consolication = React.createClass
     @write message, "color: red"
 
   calculateWidth: (text) ->
+    text = text.replace /&/g, "&amp;"
     text = text.replace /\ /g, "&nbsp;"
     text = text.replace /</g, "&lt;"
 
