@@ -23,6 +23,9 @@ Consolication = React.createClass
     command: ""
 
   componentDidMount: ->
+    if @props.autoFocus
+      @refs.input.getDOMNode().focus()
+
     if global.WebSocket
       attempts = 0
 
