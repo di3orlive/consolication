@@ -30,9 +30,11 @@ Consolication = React.createClass
             @write "Connected"
 
         @websocket.onclose = =>
-          @writeError "WebSocket connection closed, trying to reconnect"
-          attempts += 1
-          setTimeout connect, 1000
+          setTimeout =>
+            @writeError "WebSocket connection closed, trying to reconnect"
+            attempts += 1
+            setTimeout connect, 1000
+          , 100
 
         @websocket.onmessage = (message) =>
           @writeHTML message.data
