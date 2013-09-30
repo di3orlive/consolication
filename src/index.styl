@@ -19,18 +19,15 @@ rows = 25
   color color
 
   .consolication-output
+    display inline
     font-family font-family
     font-size font-size
 
   .consolication-input
-    position relative
-    top -1px
+    display inline
 
   .consolication-input-field
-    position relative
-    left -1px
     display inline-block
-    width 100%
     box-sizing border-box
     margin 0
     padding 0
@@ -41,3 +38,9 @@ rows = 25
     font-family font-family
     font-size font-size
     color color
+
+  .consolication-input-field--state-hidden
+    position absolute
+    left -10000px
+    display inline
+    width auto

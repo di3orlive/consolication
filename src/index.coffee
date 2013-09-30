@@ -55,11 +55,26 @@ Consolication = React.createClass
   writeError: (message) ->
     @write message, "color: red"
 
+  calculateWidth: (text) ->
+    hiddenInputDOMNode = @refs.hiddenInput.getDOMNode()
+    hiddenInputDOMNode.innerHTML = text.replace /\ /g, "&nbsp;"
+    hiddenInputDOMNode.offsetWidth
+
   handleClick: ->
     @refs.input.getDOMNode().focus()
 
   handleChange: (event) ->
-    @setState command: event.target.value
+    value = event.target.value
+
+    maxWidth = @refs.content.getDOMNode().offsetWidth
+    width = @calculateWidth value
+
+    @refs.input.getDOMNode().style.width = if width > maxWidth
+      "#{maxWidth}px"
+    else
+      "#{width}px"
+
+    @setState command: value
 
   handleSubmit: (event) ->
     event.preventDefault()
@@ -72,6 +87,7 @@ Consolication = React.createClass
     @history.push command
     @historyPos = @history.length
     @websocket.send command
+    @refs.input.getDOMNode().style.width = "#{@calculateWidth ""}px"
     @setState command: ""
 
   handleKeyDown: (event) ->
@@ -107,7 +123,10 @@ Consolication = React.createClass
             autoFocus: @props.autoFocus
             value: @state.command
             onChange: @handleChange
-            onKeyDown: @handleKeyDown))))
+            onKeyDown: @handleKeyDown)
+          (span
+            className: "consolication-input-field consolication-input-field--state-hidden"
+            ref: "hiddenInput"))))
 
 
 document = global.document
