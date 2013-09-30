@@ -71,7 +71,6 @@ Consolication = React.createClass
 
     @history.push command
     @historyPos = @history.length
-    @write command
     @websocket.send command
     @setState command: ""
 
