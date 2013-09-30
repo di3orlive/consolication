@@ -11,7 +11,6 @@ Consolication = React.createClass
   historyPos: 0
 
   getDefaultProps: ->
-    prompt: "$ "
     autoFocus: false
     wsServer: "localhost:4000"
 
@@ -19,10 +18,6 @@ Consolication = React.createClass
     command: ""
 
   componentDidMount: ->
-    contentWidth = @refs.content.getDOMNode().offsetWidth
-    propmtWidth = @refs.prompt.getDOMNode().offsetWidth
-    @refs.input.getDOMNode().style.width = "#{contentWidth - propmtWidth}px"
-
     if global.WebSocket
       attempts = 0
 
@@ -76,7 +71,7 @@ Consolication = React.createClass
 
     @history.push command
     @historyPos = @history.length
-    @write "#{@props.prompt}#{command}"
+    @write command
     @websocket.send command
     @setState command: ""
 
@@ -107,10 +102,6 @@ Consolication = React.createClass
         (form
           className: "consolication-input"
           onSubmit: @handleSubmit
-          (span
-            className: "consolication-input-prompt"
-            ref: "prompt"
-            @props.prompt)
           (input
             className: "consolication-input-field"
             ref: "input"
@@ -127,9 +118,6 @@ document.addEventListener "DOMContentLoaded", ->
 
   if element.attributes["data-autofocus"]
     props.autoFocus = true
-
-  if element.attributes["data-prompt"]
-    props.prompt = element.attributes["data-prompt"].value
 
   if element.attributes["data-ws-server"]
     props.wsServer = element.attributes["data-ws-server"].value
