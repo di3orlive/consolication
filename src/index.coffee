@@ -58,8 +58,11 @@ Consolication = React.createClass
     @write message, "color: red"
 
   calculateWidth: (text) ->
+    text = text.replace /\ /g, "&nbsp;"
+    text = text.replace /</g, "&lt;"
+
     hiddenInputDOMNode = @refs.hiddenInput.getDOMNode()
-    hiddenInputDOMNode.innerHTML = text.replace /\ /g, "&nbsp;"
+    hiddenInputDOMNode.innerHTML = text
     hiddenInputDOMNode.offsetWidth
 
   handleClick: ->

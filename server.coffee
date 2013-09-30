@@ -10,7 +10,7 @@ wss = new ws.Server
 wss.on "connection", (ws) ->
   ws.on "message", (request) ->
     response = """
-      <span style="color: yellow">#{request}</span>
+      <span style="color: yellow">#{request.replace /</g, "&lt;"}</span>
     """
 
     console.log ">", request
