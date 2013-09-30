@@ -6,11 +6,16 @@ url = require "url"
 {div, span, form, input, button} = React.DOM
 
 
+# add INPUT_MARGIN_FIX to input width to fix webkit behaviour
+INPUT_MARGIN_FIX = 10
+
+
 Consolication = React.createClass
   history: []
   historyPos: 0
 
   getDefaultProps: ->
+    debug: false
     autoFocus: false
     wsServer: "localhost:4000"
 
@@ -22,14 +27,20 @@ Consolication = React.createClass
       attempts = 0
 
       do connect = =>
+        @log "connecting", @props.wsServer
+
         @websocket = new global.WebSocket "ws://#{@props.wsServer}"
 
         @websocket.onopen = =>
+          @log "connected"
+
           if attempts > 0
             attempts = 0
             @write "Connected"
 
         @websocket.onclose = =>
+          @log "disconnected"
+
           setTimeout =>
             @writeError "WebSocket connection closed, trying to reconnect"
             attempts += 1
@@ -37,9 +48,11 @@ Consolication = React.createClass
           , 100
 
         @websocket.onmessage = (message) =>
+          @log "receive output", message.data
           @writeHTML message.data
 
         @websocket.onerror = =>
+          @log "error"
           @writeError "WebSocket error"
 
     else
@@ -57,6 +70,9 @@ Consolication = React.createClass
   writeError: (message) ->
     @write message, "color: red"
 
+  log: ->
+    console.log.apply console, arguments if @props.debug
+
   calculateWidth: (text) ->
     text = text.replace /&/g, "&amp;"
     text = text.replace /\ /g, "&nbsp;"
@@ -64,23 +80,28 @@ Consolication = React.createClass
 
     hiddenInputDOMNode = @refs.hiddenInput.getDOMNode()
     hiddenInputDOMNode.innerHTML = text
-    hiddenInputDOMNode.offsetWidth
+    hiddenInputDOMNode.offsetWidth + INPUT_MARGIN_FIX
+
+  setInputWidthFor: (text) ->
+    maxWidth = @refs.content.getDOMNode().offsetWidth
+    textWidth = @calculateWidth text
+    width = if textWidth > maxWidth then maxWidth else textWidth
+
+    @refs.input.getDOMNode().style.width = "#{width}px"
+
+    @log "input width", width
+
+  setCommand: (command) ->
+    @setInputWidthFor command
+    @setState command: command
 
   handleClick: ->
     @refs.input.getDOMNode().focus()
 
   handleChange: (event) ->
-    value = event.target.value
-
-    maxWidth = @refs.content.getDOMNode().offsetWidth
-    width = @calculateWidth value
-
-    @refs.input.getDOMNode().style.width = if width > maxWidth
-      "#{maxWidth}px"
-    else
-      "#{width}px"
-
-    @setState command: value
+    command = event.target.value
+    @setCommand command
+    @log "input value", command
 
   handleSubmit: (event) ->
     event.preventDefault()
@@ -92,9 +113,12 @@ Consolication = React.createClass
 
     @history.push command
     @historyPos = @history.length
+
     @websocket.send command
-    @refs.input.getDOMNode().style.width = "#{@calculateWidth ""}px"
-    @setState command: ""
+
+    @setCommand ""
+
+    @log "command send", command
 
   handleKeyDown: (event) ->
     switch event.keyCode
@@ -102,13 +126,15 @@ Consolication = React.createClass
         event.preventDefault()
         @historyPos -= 1
         @historyPos = 0 if @historyPos < 0
-        @setState command: @history[@historyPos]
+        @setCommand @history[@historyPos] or ""
+        @log "history up"
 
       when 40 # down
         event.preventDefault()
         @historyPos += 1
         @historyPos = @history.length if @historyPos > @history.length
-        @setState command: @history[@historyPos] or ""
+        @setCommand @history[@historyPos] or ""
+        @log "history down"
 
   render: ->
     (div
@@ -143,10 +169,14 @@ document.addEventListener "DOMContentLoaded", ->
   if element.attributes["data-autofocus"]
     props.autoFocus = true
 
+  query = querystring.parse(url.parse(document.location.href).query)
+
   if element.attributes["data-ws-server"]
     props.wsServer = element.attributes["data-ws-server"].value
-  else
-    ws = querystring.parse(url.parse(document.location.href).query).ws
-    props.wsServer = ws if ws
+  else if query.ws
+    props.wsServer = query.ws
+
+  if element.attributes["data-debug"] or query.debug
+    props.debug = true
 
   React.renderComponent Consolication(props), element
