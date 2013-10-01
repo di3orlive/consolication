@@ -4,7 +4,7 @@
 
 ## Зависимости
 
-> [React](http://facebook.github.io/react/) ~0.4
+* [React](http://facebook.github.io/react/) ~0.4
 
 ## Сборка минифицированной версии
 
@@ -20,7 +20,9 @@ grunt build
 
 Для инициализации консоли на странице достаточно подключить `consolication.css`
 и `consolication.js` и вставить на страницу элемент
-с идентификатором `consolication`. Пример:
+с идентификатором `consolication`.
+
+Пример:
 
 ```html
 <link rel="stylesheet" src="consolication.css"/>
@@ -38,7 +40,6 @@ grunt build
 
 Пример:
 
-
 ```html
 <div id="consolication"
      data-autofocus
@@ -54,25 +55,23 @@ grunt build
 ```
 div.consolication
   div.consolication-content
-  div.consolication-output
-  form.consolication-input
-    input.consolication-input-field
+    div.consolication-output
+    form.consolication-input
+      input.consolication-input-field
 ```
 
 При включеном эмулировании терминала дерево классов выглядит так:
 
-
 ```
 div.consolication.consolication--behaviour-terminal
   div.consolication-content
-  div.consolication-output
-  form.consolication-input
-    input.consolication-input-field
-    span.consolication-input-field.consolication-input-field--state-hidden
+    div.consolication-output
+    form.consolication-input
+      input.consolication-input-field
+      span.consolication-input-field.consolication-input-field--state-hidden
 ```
 
 Элемент `span` используется для расчета ширины текста поля ввода.
-
 
 ## Протокол общения с WebSocket сервером
 
