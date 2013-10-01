@@ -1,9 +1,7 @@
 @import "nib"
 
-background-color = black
 font-family = monospace
 font-size = 14px
-color = lightgreen
 
 char-height = 16px
 char-width = 8px
@@ -12,34 +10,47 @@ rows = 25
 .consolication
   global-reset()
 
-.consolication-content
-  height (char-height * rows)
-  background-color background-color
-  overflow-y scroll
-  color color
-
   .consolication-output
-    display inline
+    height (char-height * (rows - 1))
+    border 1px solid darkgray
+    overflow-y scroll
     font-family font-family
     font-size font-size
-
-  .consolication-input
-    display inline
 
   .consolication-input-field
-    display inline-block
-    margin 0
-    padding 0
-    border none
-    outline none
-    background-color background-color
-    line-height 1
-    font-family font-family
-    font-size font-size
-    color color
+    width 100%
+    box-sizing border-box
 
   .consolication-input-field--state-hidden
     position absolute
     left -10000px
     display inline
     width auto
+
+  &.consolication--behaviour-terminal
+    .consolication-content
+      height (char-height * rows)
+      background-color black
+      overflow-y scroll
+      color lightgreen
+
+    .consolication-output
+      display inline
+      height auto
+      border none
+      overflow-y visible
+    
+    .consolication-input
+      display inline
+
+    .consolication-input-field
+      display inline-block
+      margin 0
+      padding 0
+      border none
+      outline none
+      background-color black
+      line-height 1
+      font-family font-family
+      font-size font-size
+      color lightgreen

@@ -17,6 +17,7 @@ Consolication = React.createClass
   getDefaultProps: ->
     debug: false
     autoFocus: false
+    terminalEmulation: false
     wsServer: "localhost:4000"
 
   getInitialState: ->
@@ -64,8 +65,13 @@ Consolication = React.createClass
   writeHTML: (html) ->
     outputNode = @refs.output.getDOMNode()
     outputNode.innerHTML = outputNode.innerHTML + html
-    contentNode = @refs.content.getDOMNode()
-    contentNode.scrollTop = contentNode.scrollHeight
+
+    scrollableNode = if @props.terminalEmulation
+      @refs.content.getDOMNode()
+    else
+      outputNode
+
+    scrollableNode.scrollTop = scrollableNode.scrollHeight
 
   write: (text, style) ->
     @writeHTML """<p style="#{style}">#{text}</p>"""
@@ -95,7 +101,8 @@ Consolication = React.createClass
     @log "input width", width
 
   setCommand: (command) ->
-    @setInputWidthFor command
+    if @props.terminalEmulation
+      @setInputWidthFor command
     @setState command: command
 
   handleClick: ->
@@ -140,8 +147,11 @@ Consolication = React.createClass
         @log "history down"
 
   render: ->
+    classes = ["consolication"]
+    classes.push ["consolication--behaviour-terminal"] if @props.terminalEmulation
+
     (div
-      className: "consolication"
+      className: classes.join " "
       onClick: @handleClick
       (div
         className: "consolication-content"
@@ -178,6 +188,9 @@ document.addEventListener "DOMContentLoaded", ->
     props.wsServer = element.attributes["data-ws-server"].value
   else if query.ws
     props.wsServer = query.ws
+
+  if element.attributes["data-terminal-emulation"]
+    props.terminalEmulation = true
 
   if element.attributes["data-debug"] or query.debug
     props.debug = true
