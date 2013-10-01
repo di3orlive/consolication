@@ -17,7 +17,7 @@ module.exports = (grunt) ->
     stylus:
       server:
         files:
-          ".tmp/index.css": "src/index.styl"
+          ".tmp/consolication.css": "src/consolication.styl"
     browserify:
       options:
         transform: [
@@ -38,7 +38,7 @@ module.exports = (grunt) ->
             "React"
           ]
         files:
-          ".tmp/index.js": "src/index.coffee"
+          ".tmp/consolication.js": "src/consolication.coffee"
     express:
       options:
         hostname: "0.0.0.0"
@@ -71,13 +71,13 @@ module.exports = (grunt) ->
     cssmin:
       build:
         files:
-          "build/index.css": ".tmp/index.css"
+          "build/consolication.css": ".tmp/consolication.css"
     uglify:
       build:
         files: 
-          "build/index.js": [
+          "build/consolication.js": [
             ".tmp/vendor.js"
-            ".tmp/index.js"
+            ".tmp/consolication.js"
           ]
 
   grunt.registerTask "server", [

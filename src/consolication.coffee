@@ -169,9 +169,10 @@ Consolication = React.createClass
             value: @state.command
             onChange: @handleChange
             onKeyDown: @handleKeyDown)
-          (span
-            className: "consolication-input-field consolication-input-field--state-hidden"
-            ref: "hiddenInput"))))
+          (if @props.terminalEmulation
+            (span
+              className: "consolication-input-field consolication-input-field--state-hidden"
+              ref: "hiddenInput")))))
 
 
 document = global.document
