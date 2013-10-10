@@ -18,7 +18,7 @@ Consolication = React.createClass
     debug: false
     autoFocus: false
     terminalEmulation: false
-    wsServer: "localhost:4000"
+    wsServer: "ws://localhost:4000"
 
   getInitialState: ->
     command: ""
@@ -33,7 +33,7 @@ Consolication = React.createClass
       do connect = =>
         @log "connecting", @props.wsServer
 
-        @websocket = new global.WebSocket "ws://#{@props.wsServer}"
+        @websocket = new global.WebSocket @props.wsServer
 
         @websocket.onopen = =>
           @log "connected"
