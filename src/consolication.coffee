@@ -24,6 +24,9 @@ Consolication = React.createClass
     command: ""
 
   componentDidMount: ->
+    if @props.terminalEmulation
+      @setInputWidthFor ""
+
     if @props.autoFocus
       @refs.input.getDOMNode().focus()
 
